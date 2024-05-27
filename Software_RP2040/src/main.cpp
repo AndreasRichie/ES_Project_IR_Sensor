@@ -1,27 +1,23 @@
+#include <Adafruit_AMG88xx.h>
 #include <Arduino.h>
 #include <PacketSerial.h>
-#include <SensirionI2CScd4x.h>
-#include <SensirionI2CSgp40.h>
-#include <VOCGasIndexAlgorithm.h>
+#include <SPI.h>
 #include <Wire.h>
 
 #define DEBUG 0
 
-SensirionI2CSgp40 sgp40;
-SensirionI2CScd4x scd4x;
-VOCGasIndexAlgorithm voc_algorithm;
+Adafruit_AMG88xx amg;
 
 PacketSerial myPacketSerial;
 
 // Type of transfer packet
 
-#define PKT_TYPE_SENSOR_SCD41_CO2 0XB2
-#define PKT_TYPE_SENSOR_SHT41_TEMP 0XB3
-#define PKT_TYPE_SENSOR_SHT41_HUMIDITY 0XB4
-#define PKT_TYPE_SENSOR_TVOC_INDEX 0XB5
+#define PKT_TYPE_SENSOR_IR_CAMERA_1 0XB2
 #define PKT_TYPE_CMD_COLLECT_INTERVAL 0xA0
 #define PKT_TYPE_CMD_BEEP_ON 0xA1
 #define PKT_TYPE_CMD_SHUTDOWN 0xA3
+
+float pixels[AMG88xx_PIXEL_ARRAY_SIZE];
 
 // sensor data send to  esp32
 void sensor_data_send(uint8_t type, float data) {
@@ -70,149 +66,33 @@ void sensor_power_off(void) {
   digitalWrite(18, LOW);
 }
 
-/************************ sgp40 tvoc  ****************************/
+/************************ amg8833 IR camera  ****************************/
 
-void sensor_sgp40_init(void) {
-  uint16_t error;
-  char errorMessage[256];
+void sensor_amg8833_init(void) {
+  Serial.println(F("AMG88xx thermal camera!"));
 
-  sgp40.begin(Wire);
+  bool status;
 
-  uint16_t serialNumber[3];
-  uint8_t serialNumberSize = 3;
-
-  error = sgp40.getSerialNumber(serialNumber, serialNumberSize);
-
-  if (error) {
-    Serial.print("Error trying to execute getSerialNumber(): ");
-    errorToString(error, errorMessage, 256);
-    Serial.println(errorMessage);
-  } else {
-    Serial.print("SerialNumber:");
-    Serial.print("0x");
-    for (size_t i = 0; i < serialNumberSize; i++) {
-      uint16_t value = serialNumber[i];
-      Serial.print(value < 4096 ? "0" : "");
-      Serial.print(value < 256 ? "0" : "");
-      Serial.print(value < 16 ? "0" : "");
-      Serial.print(value, HEX);
-    }
-    Serial.println();
+  // default settings
+  status = amg.begin();
+  if (!status) {
+    Serial.println("Could not find a valid AMG88xx sensor, check wiring!");
+    while (1);
   }
 
-  uint16_t testResult;
-  error = sgp40.executeSelfTest(testResult);
-  if (error) {
-    Serial.print("Error trying to execute executeSelfTest(): ");
-    errorToString(error, errorMessage, 256);
-    Serial.println(errorMessage);
-  } else if (testResult != 0xD400) {
-    Serial.print("executeSelfTest failed with error: ");
-    Serial.println(testResult);
-  }
+  Serial.println("-- Thermal Camera Test --");
 }
 
-void sensor_sgp40_get(void) {
-  uint16_t error;
-  char errorMessage[256];
-  uint16_t defaultRh = 0x8000;
-  uint16_t defaultT = 0x6666;
-  uint16_t srawVoc = 0;
+void sensor_amg8833_get(void) {
+  amg.readPixels(pixels);
 
-  Serial.print("sensor sgp40: ");
+  for (int i = 0; i < AMG88xx_PIXEL_ARRAY_SIZE; i++) {
+    Serial.print("AMG8833 Pixel ");
+    Serial.print(i);
+    Serial.print(": ");
+    Serial.println(pixels[i]);
 
-  error = sgp40.measureRawSignal(defaultRh, defaultT, srawVoc);
-  if (error) {
-    Serial.print("Error trying to execute measureRawSignal(): ");
-    errorToString(error, errorMessage, 256);
-    Serial.println(errorMessage);
-  } else {
-    Serial.print("SRAW_VOC:");
-    Serial.println(srawVoc);
-  }
-
-  if (error) {
-    return;
-  } else {
-    int32_t voc_index = voc_algorithm.process(srawVoc);
-    Serial.print("VOC Index: ");
-    Serial.println(voc_index);
-
-    sensor_data_send(PKT_TYPE_SENSOR_TVOC_INDEX, (float)voc_index);
-  }
-}
-
-/************************ scd4x  co2 ****************************/
-
-void sensor_scd4x_init(void) {
-  uint16_t error;
-  char errorMessage[256];
-
-  scd4x.begin(Wire);
-
-  // stop potentially previously started measurement
-  error = scd4x.stopPeriodicMeasurement();
-  if (error) {
-    Serial.print("Error trying to execute stopPeriodicMeasurement(): ");
-    errorToString(error, errorMessage, 256);
-    Serial.println(errorMessage);
-  }
-
-  uint16_t serial0;
-  uint16_t serial1;
-  uint16_t serial2;
-  error = scd4x.getSerialNumber(serial0, serial1, serial2);
-  if (error) {
-    Serial.print("Error trying to execute getSerialNumber(): ");
-    errorToString(error, errorMessage, 256);
-    Serial.println(errorMessage);
-  } else {
-    printSerialNumber(serial0, serial1, serial2);
-  }
-
-  // Start Measurement
-  error = scd4x.startPeriodicMeasurement();
-  if (error) {
-    Serial.print("Error trying to execute startPeriodicMeasurement(): ");
-    errorToString(error, errorMessage, 256);
-    Serial.println(errorMessage);
-  }
-  // scd4x.powerDown();
-}
-
-void sensor_scd4x_get(void) {
-  uint16_t error;
-  char errorMessage[256];
-
-  Serial.print("sensor scd4x: ");
-  // Read Measurement
-  uint16_t co2;
-  float temperature;
-  float humidity;
-  error = scd4x.readMeasurement(co2, temperature, humidity);
-  if (error) {
-    Serial.print("Error trying to execute readMeasurement(): ");
-    errorToString(error, errorMessage, 256);
-    Serial.println(errorMessage);
-  } else if (co2 == 0) {
-    Serial.println("Invalid sample detected, skipping.");
-  } else {
-    Serial.print("Co2:");
-    Serial.print(co2);
-    Serial.print("\t");
-    Serial.print("Temperature:");
-    Serial.print(temperature);
-    Serial.print("\t");
-    Serial.print("Humidity:");
-    Serial.println(humidity);
-  }
-
-  if (error) {
-    return;
-  } else {
-    sensor_data_send(PKT_TYPE_SENSOR_SHT41_TEMP, temperature);
-    sensor_data_send(PKT_TYPE_SENSOR_SHT41_HUMIDITY, humidity);
-    sensor_data_send(PKT_TYPE_SENSOR_SCD41_CO2, (float)co2);  // todo
+    sensor_data_send(PKT_TYPE_SENSOR_IR_CAMERA_1, (float)pixels[i]);
   }
 }
 
@@ -226,19 +106,6 @@ void beep_on(void) {
   analogWrite(Buzzer, 127);
   delay(50);
   analogWrite(Buzzer, 0);
-}
-
-/************************ grove  ****************************/
-
-void grove_adc_get(void) {
-  String dataString = "";
-  int adc0 = analogRead(26);
-  dataString += String(adc0);
-  dataString += ',';
-  int adc1 = analogRead(27);
-  dataString += String(adc1);
-  Serial.print("grove adc: ");
-  Serial.println(dataString);
 }
 
 /************************ recv cmd from esp32  ****************************/
@@ -287,32 +154,7 @@ void setup() {
   Wire.setSCL(21);
   Wire.begin();
 
-  sensor_sgp40_init();
-  sensor_scd4x_init();
-
-  int32_t index_offset;
-  int32_t learning_time_offset_hours;
-  int32_t learning_time_gain_hours;
-  int32_t gating_max_duration_minutes;
-  int32_t std_initial;
-  int32_t gain_factor;
-  voc_algorithm.get_tuning_parameters(
-      index_offset, learning_time_offset_hours, learning_time_gain_hours,
-      gating_max_duration_minutes, std_initial, gain_factor);
-
-  Serial.println("\nVOC Gas Index Algorithm parameters");
-  Serial.print("Index offset:\t");
-  Serial.println(index_offset);
-  Serial.print("Learing time offset hours:\t");
-  Serial.println(learning_time_offset_hours);
-  Serial.print("Learing time gain hours:\t");
-  Serial.println(learning_time_gain_hours);
-  Serial.print("Gating max duration minutes:\t");
-  Serial.println(gating_max_duration_minutes);
-  Serial.print("Std inital:\t");
-  Serial.println(std_initial);
-  Serial.print("Gain factor:\t");
-  Serial.println(gain_factor);
+  sensor_amg8833_init();
 
   beep_init();
   delay(500);
@@ -325,9 +167,7 @@ void loop() {
 
     Serial.print("\r\n\r\n--------- start measure -------\r\n");
 
-    sensor_sgp40_get();
-    sensor_scd4x_get();
-    grove_adc_get();
+    sensor_amg8833_get();
   }
 
   i++;
