@@ -4,7 +4,7 @@
 #include <SPI.h>
 #include <Wire.h>
 
-#define DEBUG 0
+#define DEBUG 1
 
 Adafruit_AMG88xx amg;
 
@@ -12,7 +12,7 @@ PacketSerial myPacketSerial;
 
 // Type of transfer packet
 
-#define PKT_TYPE_SENSOR_IR_CAMERA_1 0XB2
+#define PKT_TYPE_SENSOR_IR_CAMERA_1 0XB0
 #define PKT_TYPE_CMD_COLLECT_INTERVAL 0xA0
 #define PKT_TYPE_CMD_BEEP_ON 0xA1
 #define PKT_TYPE_CMD_SHUTDOWN 0xA3
@@ -20,21 +20,24 @@ PacketSerial myPacketSerial;
 float pixels[AMG88xx_PIXEL_ARRAY_SIZE];
 
 // sensor data send to  esp32
-void sensor_data_send(uint8_t type, float data) {
+void sensor_data_send(uint8_t type, uint8_t index, float data) {
   uint8_t data_buf[32] = {0};
-  int index = 0;
+  int size = 0;
 
   data_buf[0] = type;
-  index++;
+  size++;
 
-  memcpy(&data_buf[1], &data, sizeof(float));
-  index += sizeof(float);
+  data_buf[1] = index;
+  size++;
 
-  myPacketSerial.send(data_buf, index);
+  memcpy(&data_buf[2], &data, sizeof(float));
+  size += sizeof(float);
+
+  myPacketSerial.send(data_buf, size);
 
 #if DEBUG
-  Serial.printf("---> send len:%d, data: ", index);
-  for (int i = 0; i < index; i++) {
+  Serial.printf("---> send len:%d, data: ", size);
+  for (int i = 0; i < size; i++) {
     Serial.printf("0x%x ", data_buf[i]);
   }
   Serial.println("");
@@ -86,13 +89,14 @@ void sensor_amg8833_init(void) {
 void sensor_amg8833_get(void) {
   amg.readPixels(pixels);
 
-  for (int i = 0; i < AMG88xx_PIXEL_ARRAY_SIZE; i++) {
+  for (int index = 0; index < AMG88xx_PIXEL_ARRAY_SIZE; index++) {
     Serial.print("AMG8833 Pixel ");
-    Serial.print(i);
+    Serial.print(index);
     Serial.print(": ");
-    Serial.println(pixels[i]);
+    Serial.println(pixels[index]);
 
-    sensor_data_send(PKT_TYPE_SENSOR_IR_CAMERA_1, (float)pixels[i]);
+    sensor_data_send(PKT_TYPE_SENSOR_IR_CAMERA_1, static_cast<uint8_t>(index),
+                     static_cast<float>(pixels[index]));
   }
 }
 
