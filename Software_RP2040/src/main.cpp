@@ -2,13 +2,16 @@
 #include <Arduino.h>
 #include <PacketSerial.h>
 #include <SPI.h>
+#include <TCA9548.h>
 #include <Wire.h>
 
-#define DEBUG 1
+#define DEBUG 0
+#define I2C_MUX_ADDRESS 0x70
 
 Adafruit_AMG88xx amg;
+TCA9548 i2_mux(I2C_MUX_ADDRESS);
 
-PacketSerial myPacketSerial;
+PacketSerial_<COBS, 0, 512> myPacketSerial;
 
 // Type of transfer packet
 
@@ -34,7 +37,6 @@ void sensor_data_send(uint8_t type, uint8_t index, float data) {
   size += sizeof(float);
 
   myPacketSerial.send(data_buf, size);
-
 #if DEBUG
   Serial.printf("---> send len:%d, data: ", size);
   for (int i = 0; i < size; i++) {
@@ -76,7 +78,6 @@ void sensor_amg8833_init(void) {
 
   bool status;
 
-  // default settings
   status = amg.begin();
   if (!status) {
     Serial.println("Could not find a valid AMG88xx sensor, check wiring!");
@@ -90,9 +91,7 @@ void sensor_amg8833_get(void) {
   amg.readPixels(pixels);
 
   for (int index = 0; index < AMG88xx_PIXEL_ARRAY_SIZE; index++) {
-    Serial.print("AMG8833 Pixel ");
-    Serial.print(index);
-    Serial.print(": ");
+    Serial.printf("AMG8833 Pixel %d: ", index);
     Serial.println(pixels[index]);
 
     sensor_data_send(PKT_TYPE_SENSOR_IR_CAMERA_1, static_cast<uint8_t>(index),
@@ -157,7 +156,11 @@ void setup() {
   Wire.setSDA(20);
   Wire.setSCL(21);
   Wire.begin();
+  if (i2_mux.begin() == false) {
+    Serial.println("Could not connect to I2C Multiplexer!");
+  }
 
+  i2_mux.selectChannel(2);
   sensor_amg8833_init();
 
   beep_init();
@@ -171,6 +174,7 @@ void loop() {
 
     Serial.print("\r\n\r\n--------- start measure -------\r\n");
 
+    i2_mux.selectChannel(2);
     sensor_amg8833_get();
   }
 
@@ -178,6 +182,7 @@ void loop() {
 
   myPacketSerial.update();
   if (myPacketSerial.overflow()) {
+    Serial.println("Buffer Overflow");
   }
   delay(10);
 }
