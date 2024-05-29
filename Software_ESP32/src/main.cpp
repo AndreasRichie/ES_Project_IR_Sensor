@@ -6,7 +6,8 @@
              // backlight pin
 
 /* More dev device declaration:
- * https://github.com/moononournation/Arduino_GFX/wiki/Dev-Device-Declaration */
+ * https://github.com/moononournation/Arduino_GFX/wiki/Dev-Device-Declaration
+ */
 #if defined(DISPLAY_DEV_KIT)
 Arduino_GFX *gfx = create_default_Arduino_GFX();
 #else /* !defined(DISPLAY_DEV_KIT) */
@@ -15,7 +16,8 @@ Arduino_GFX *gfx = create_default_Arduino_GFX();
 #define GFX_BL 45
 Arduino_DataBus *bus =
     new Arduino_SWSPI(GFX_NOT_DEFINED /* DC */, PCA95x5::Port::P04 /* CS */,
-                      41 /* SCK */, 48 /* MOSI */, GFX_NOT_DEFINED /* MISO */);
+                      41 /* SCK */, 48 /* MOSI */, GFX_NOT_DEFINED /* MISO
+                      */);
 
 // option 1:
 // Uncomment for 4" rect display
@@ -72,6 +74,5 @@ void loop() {
   gfx->setTextSize(random(6) /* x scale */, random(6) /* y scale */,
                    random(2) /* pixel_margin */);
   gfx->println("Sensecap Indicator");
-
   delay(1000);  // 1 second
 }
