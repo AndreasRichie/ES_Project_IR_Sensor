@@ -1,5 +1,13 @@
 #include <Arduino_GFX_Library.h>
 #include <PCA95x5.h>
+#include <PacketSerial.h>
+
+PacketSerial_<COBS, 0, 512> myPacketSerial;
+
+#define RXD2 20
+#define TXD2 19
+
+#define PKT_TYPE_SENSOR_IR_CAMERA_1 0XB0
 
 #define GFX_BL \
   DF_GFX_BL  // default backlight pin, you may replace DF_GFX_BL to actual
@@ -40,6 +48,8 @@ Arduino_RGB_Display *gfx = new Arduino_RGB_Display(
  * End of Arduino_GFX setting
  ******************************************************************************/
 
+void onPacketReceived(const uint8_t *buffer, size_t size);
+
 void setup(void) {
   Serial.begin(115200);
   // Serial.setDebugOutput(true);
@@ -65,6 +75,11 @@ void setup(void) {
   gfx->setTextColor(RED);
   gfx->println("Sensecap Indicator");
 
+  // myPacketSerial.begin(115200);
+  Serial1.begin(115200, SERIAL_8N1, RXD2, TXD2);
+  myPacketSerial.setStream(&Serial1);
+  myPacketSerial.setPacketHandler(&onPacketReceived);
+
   delay(5000);  // 5 seconds
 }
 
@@ -75,4 +90,31 @@ void loop() {
                    random(2) /* pixel_margin */);
   gfx->println("Sensecap Indicator");
   delay(1000);  // 1 second
+
+  myPacketSerial.update();
+  if (myPacketSerial.overflow()) {
+    Serial.println("Buffer Overflow");
+  }
+}
+
+void onPacketReceived(const uint8_t *buffer, size_t size) {
+  Serial.printf("<--- recv len:%d, data: ", size);
+
+  if (size < 1) {
+    return;
+  }
+  // byte serbytes[] = buffer[i];
+  float dataval;
+  uint8_t index;
+  switch (buffer[0]) {
+    case PKT_TYPE_SENSOR_IR_CAMERA_1: {
+      index = buffer[1];
+      memcpy(&dataval, &buffer[2], sizeof(float));
+      Serial.printf("Camera 1 Result, Pixel %d: ", index);
+      Serial.println(dataval);
+      break;
+    }
+    default:
+      break;
+  }
 }
