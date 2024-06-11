@@ -6,7 +6,7 @@
 
 #include "measurement_data.h"
 
-#define DEBUG 0
+#define DEBUG 1
 
 #define RXD2 20
 #define TXD2 19
@@ -68,8 +68,8 @@ void onPacketReceived(const uint8_t *buffer, size_t size);
 
 void setup(void) {
   Serial.begin(115200);
-  // Serial.setDebugOutput(true);
-  // while(!Serial);
+  Serial.setDebugOutput(true);
+  while (!Serial);
   Serial.println("Arduino_GFX Hello World example");
 
 #ifdef GFX_EXTRA_PRE_INIT
@@ -119,7 +119,7 @@ void loop() {
                      random(2) /* pixel_margin */);
     gfx->println("Sensecap Indicator");
   }
-
+  // Serial.println("test");
   ++count;
   delay(10);  // 10 milliseconds
 }
@@ -200,3 +200,80 @@ void onPacketReceived(const uint8_t *buffer, size_t size) {
       break;
   }
 }
+
+/* Blink Example
+   This example code is in the Public Domain (or CC0 licensed, at your option.)
+   Unless required by applicable law or agreed to in writing, this
+   software is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR
+   CONDITIONS OF ANY KIND, either express or implied.
+*/
+
+// #include <Arduino.h>
+// #include <driver/gpio.h>
+// #include <freertos/FreeRTOS.h>
+// #include <freertos/task.h>
+// #include <stdio.h>
+
+// #include "sdkconfig.h"
+
+// /* Can run 'make menuconfig' to choose the GPIO to blink,
+//    or you can edit the following line and set a number here.
+// */
+// #define BLINK_GPIO (gpio_num_t) CONFIG_BLINK_GPIO
+
+// #ifndef LED_BUILTIN
+// #define LED_BUILTIN 4
+// #endif
+
+// void blink_task(void *pvParameter) {
+//   /* Configure the IOMUX register for pad BLINK_GPIO (some pads are
+//      muxed to GPIO on reset already, but some default to other
+//      functions and need to be switched to GPIO. Consult the
+//      Technical Reference for a list of pads and their default
+//      functions.)
+//   */
+
+//   while (1) {
+//     /* Blink off (output low) */
+//     Serial.println("off!");
+//     vTaskDelay(1000 / portTICK_PERIOD_MS);
+//     /* Blink on (output high) */
+//     Serial.println("on!");
+//     vTaskDelay(1000 / portTICK_PERIOD_MS);
+//   }
+// }
+
+// #if !CONFIG_AUTOSTART_ARDUINO
+// void arduinoTask(void *pvParameter) {
+//   pinMode(LED_BUILTIN, OUTPUT);
+//   while (1) {
+//     digitalWrite(LED_BUILTIN, !digitalRead(LED_BUILTIN));
+//     webpage.processNextRequest(dnsServer);
+//     delay(1000);
+//   }
+// }
+
+// extern "C" void app_main() {
+//   // initialize arduino library before we start the tasks
+//   initArduino();
+
+//   xTaskCreate(&blink_task, "blink_task", configMINIMAL_STACK_SIZE, NULL, 5,
+//               NULL);
+//   xTaskCreate(&arduinoTask, "arduino_task", configMINIMAL_STACK_SIZE, NULL,
+//   5,
+//               NULL);
+// }
+// #else
+// void setup() {
+//   Serial.begin(115200);
+//   Serial.println("start!");
+//   xTaskCreate(&blink_task, "blink_task", configMINIMAL_STACK_SIZE, NULL, 5,
+//               NULL);
+//   // pinMode(LED_BUILTIN, OUTPUT);
+// }
+// void loop() {
+//   // digitalWrite(LED_BUILTIN, !digitalRead(LED_BUILTIN));
+//   Serial.println("Hello!");
+//   delay(1000);
+// }
+// #endif
