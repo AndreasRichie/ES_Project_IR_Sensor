@@ -1,0 +1,15 @@
+{
+    "files.associations": {
+        "esp_lcd_panel_io.h": "c",
+        "esp_lcd_panel_vendor.h": "c",
+        "esp_lcd_panel_ops.h": "c",
+        "esp_lcd_panel_rgb.h": "c",
+        "array": "cpp",
+        "deque": "cpp",
+        "string": "cpp",
+        "unordered_map": "cpp",
+        "vector": "cpp",
+        "string_view": "cpp",
+        "initializer_list": "cpp"
+    }
+}

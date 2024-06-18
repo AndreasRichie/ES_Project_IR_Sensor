@@ -1,5 +1,9 @@
-# This file was automatically generated for projects
-# without default 'CMakeLists.txt' file.
-FILE(GLOB_RECURSE app_sources ${CMAKE_SOURCE_DIR}/src/*.*)
+set(UI_DIR ../lib/hmi_ui)
+file(GLOB_RECURSE UI_SOURCES ${UI_DIR}/*.c)
 
-idf_component_register(SRCS ${app_sources})
+set(UTIL_DIR ../lib/util)
+file(GLOB_RECURSE UTIL_SOURCES ${UTIL_DIR}/*.c)
+
+idf_component_register(
+    SRCS "main.cpp" "lv_port.c" "measurement_data.cpp" ${UI_SOURCES} ${UTIL_SOURCES}
+    INCLUDE_DIRS "."  ${UI_DIR} ${UTIL_DIR})

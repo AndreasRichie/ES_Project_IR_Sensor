@@ -4,6 +4,7 @@
 #pragma once
 
 #include <array>
+#include <string>
 
 #define PIXEL_COUNT 64
 #define NUMBER_OF_CAMERAS 6
@@ -16,6 +17,7 @@ struct measurement_data {
   float air_rH;
   float surface_temp;
 
+  const std::string tag = "measurement_data";
   void print_to_serial(const bool &pixels);
 };
 

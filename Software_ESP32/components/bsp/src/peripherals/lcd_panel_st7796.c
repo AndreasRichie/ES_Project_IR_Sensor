@@ -106,7 +106,7 @@ esp_err_t esp_lcd_new_panel_st7796(
   st7796->base.set_gap = panel_st7796_set_gap;
   st7796->base.mirror = panel_st7796_mirror;
   st7796->base.swap_xy = panel_st7796_swap_xy;
-  st7796->base.disp_off = panel_st7796_disp_on_off;
+  st7796->base.disp_on_off = panel_st7796_disp_on_off;
   *ret_panel = &(st7796->base);
   ESP_LOGD(TAG, "new st7796 panel @%p", st7796);
 

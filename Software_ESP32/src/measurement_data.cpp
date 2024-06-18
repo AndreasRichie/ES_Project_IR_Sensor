@@ -1,25 +1,25 @@
 #include "measurement_data.h"
 
-#include <Arduino.h>
+#include <sstream>
+
+#include "esp_log.h"
 
 void measurement_data::print_to_serial(const bool &pixels) {
-  Serial.println("Measurement results:");
+  std::stringstream stream;
+  stream.precision(4);
+  stream << "Measurement results:\n";
   for (unsigned int camera_index = 0; camera_index < NUMBER_OF_CAMERAS;
        ++camera_index) {
-    Serial.printf("\tIR Camera %d:\r\n", camera_index + 1);
+    stream << "\tIR Camera " << camera_index + 1 << ":\r\n";
     if (pixels) {
-      Serial.print("\t\tPixel Values: ");
-      for (auto &pixel : ir_camera_data[camera_index])
-        Serial.printf("%.2f, ", pixel);
-      Serial.println("");
+      stream << "\t\tPixel Values: ";
+      for (auto &pixel : ir_camera_data[camera_index]) stream << pixel << ", ";
+      stream << "\n";
     }
-    Serial.print("\t\tMean Value: ");
-    Serial.println(ir_camera_means[camera_index]);
+    stream << "\t\tMean Value: " << ir_camera_means[camera_index] << "\n";
   }
-  Serial.print("\tAir Temperature: ");
-  Serial.println(air_temp);
-  Serial.print("\tAir Humidity: ");
-  Serial.println(air_rH);
-  Serial.print("\tSurface Temperature: ");
-  Serial.println(surface_temp);
+  stream << "\tAir Temperature: " << air_temp << "\n";
+  stream << "\tAir Humidity: " << air_rH << "\n";
+  stream << "\tSurface Temperature: " << surface_temp;
+  ESP_LOGI(tag.c_str(), "%s", stream.str().c_str());
 }
