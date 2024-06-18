@@ -13,7 +13,11 @@
 
 /******************************** Defines ********************************/
 
-#define DEBUG 0
+#define DEBUG 1
+
+#define DELAY_TIME 10
+#define SEND_INTERVAL 100
+#define LOOP_COUNT (SEND_INTERVAL / DELAY_TIME)
 
 #define I2C_MUX_ADDRESS 0x70
 
@@ -334,7 +338,7 @@ void setup() {
 }
 
 void loop() {
-  if (i > 500) {
+  if (i > LOOP_COUNT) {
     i = 0;
     // read from all IR cameras
     if (ir_cameras_connected)
@@ -353,5 +357,5 @@ void loop() {
   if (myPacketSerial.overflow()) {
     Serial.println("Buffer Overflow");
   }
-  delay(10);
+  delay(DELAY_TIME);
 }
