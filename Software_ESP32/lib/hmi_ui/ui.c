@@ -78,6 +78,25 @@ lv_obj_t * ui_Pixel62;
 lv_obj_t * ui_Pixel63;
 lv_obj_t * ui_Pixel64;
 lv_obj_t * ui_TitleCamera;
+
+
+// SCREEN: ui_ScreenSensors
+void ui_ScreenSensors_screen_init(void);
+lv_obj_t * ui_ScreenSensors;
+lv_obj_t * ui_TitleSensorValues;
+lv_obj_t * ui_SensorValueLabels;
+lv_obj_t * ui_SurfaceTempText;
+lv_obj_t * ui_SurfaceTempDisplay;
+lv_obj_t * ui_Value;
+lv_obj_t * ui_Unit;
+lv_obj_t * ui_AirTempText;
+lv_obj_t * ui_AirTempDisplay;
+lv_obj_t * ui_Value1;
+lv_obj_t * ui_Unit1;
+lv_obj_t * ui_AirHumText;
+lv_obj_t * ui_AirHumDisplay;
+lv_obj_t * ui_Value2;
+lv_obj_t * ui_Unit2;
 lv_obj_t * ui____initial_actions0;
 const lv_img_dsc_t * ui_imgset_location[1] = {&ui_img_location2_png};
 
@@ -102,6 +121,7 @@ void ui_init(void)
                                                true, LV_FONT_DEFAULT);
     lv_disp_set_theme(dispp, theme);
     ui_ScreenCamera_screen_init();
+    ui_ScreenSensors_screen_init();
     ui____initial_actions0 = lv_obj_create(NULL);
     lv_disp_load_scr(ui_ScreenCamera);
 }

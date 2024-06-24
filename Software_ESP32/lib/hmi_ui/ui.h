@@ -84,6 +84,23 @@ extern lv_obj_t * ui_Pixel62;
 extern lv_obj_t * ui_Pixel63;
 extern lv_obj_t * ui_Pixel64;
 extern lv_obj_t * ui_TitleCamera;
+// SCREEN: ui_ScreenSensors
+void ui_ScreenSensors_screen_init(void);
+extern lv_obj_t * ui_ScreenSensors;
+extern lv_obj_t * ui_TitleSensorValues;
+extern lv_obj_t * ui_SensorValueLabels;
+extern lv_obj_t * ui_SurfaceTempText;
+extern lv_obj_t * ui_SurfaceTempDisplay;
+extern lv_obj_t * ui_Value;
+extern lv_obj_t * ui_Unit;
+extern lv_obj_t * ui_AirTempText;
+extern lv_obj_t * ui_AirTempDisplay;
+extern lv_obj_t * ui_Value1;
+extern lv_obj_t * ui_Unit1;
+extern lv_obj_t * ui_AirHumText;
+extern lv_obj_t * ui_AirHumDisplay;
+extern lv_obj_t * ui_Value2;
+extern lv_obj_t * ui_Unit2;
 extern lv_obj_t * ui____initial_actions0;
 
 

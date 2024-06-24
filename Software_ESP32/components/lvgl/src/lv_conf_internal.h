@@ -2,7 +2,7 @@
  * GENERATED FILE, DO NOT EDIT IT!
  * @file lv_conf_internal.h
  * Make sure all the defines of lv_conf.h have a default value
-**/
+ **/
 
 #ifndef LV_CONF_INTERNAL_H
 #define LV_CONF_INTERNAL_H
@@ -86,7 +86,7 @@
     #ifdef CONFIG_LV_COLOR_SCREEN_TRANSP
         #define LV_COLOR_SCREEN_TRANSP CONFIG_LV_COLOR_SCREEN_TRANSP
     #else
-        #define LV_COLOR_SCREEN_TRANSP 0
+        #define LV_COLOR_SCREEN_TRANSP 1
     #endif
 #endif
 

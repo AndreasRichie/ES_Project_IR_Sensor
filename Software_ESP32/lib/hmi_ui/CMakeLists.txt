@@ -1,4 +1,5 @@
 SET(SOURCES screens/ui_ScreenCamera.c
+    screens/ui_ScreenSensors.c
     ui.c
     components/ui_comp_hook.c
     ui_helpers.c

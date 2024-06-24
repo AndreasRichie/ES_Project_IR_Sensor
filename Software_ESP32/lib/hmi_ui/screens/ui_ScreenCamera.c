@@ -15,8 +15,8 @@ void ui_ScreenCamera_screen_init(void)
     lv_obj_set_width(ui_PixelGrid, 400);
     lv_obj_set_height(ui_PixelGrid, 400);
     lv_obj_set_x(ui_PixelGrid, 0);
-    lv_obj_set_y(ui_PixelGrid, -20);
-    lv_obj_set_align(ui_PixelGrid, LV_ALIGN_BOTTOM_MID);
+    lv_obj_set_y(ui_PixelGrid, 20);
+    lv_obj_set_align(ui_PixelGrid, LV_ALIGN_CENTER);
     lv_obj_set_flex_flow(ui_PixelGrid, LV_FLEX_FLOW_ROW_WRAP);
     lv_obj_set_flex_align(ui_PixelGrid, LV_FLEX_ALIGN_START, LV_FLEX_ALIGN_START, LV_FLEX_ALIGN_START);
     lv_obj_clear_flag(ui_PixelGrid, LV_OBJ_FLAG_CLICKABLE | LV_OBJ_FLAG_SCROLLABLE);      /// Flags
