@@ -30,8 +30,6 @@ static const char *TAG = "app_main";
 uart_handler uart_handler_;
 display_handler display_handler_;
 
-int display_index = 0;
-
 ESP_EVENT_DEFINE_BASE(VIEW_EVENT_BASE);
 esp_event_loop_handle_t view_event_handle;
 
@@ -52,38 +50,8 @@ static void print_values_task(void *arg) {
 
 static void handle_display_task(void *arg) {
   while (1) {
-    display_handler_.handle_values(uart_handler_.get_last_read_data(),
-                                   display_index);
+    display_handler_.handle_values(uart_handler_.get_last_read_data());
   }
-}
-
-static void btn_event_cb(lv_event_t *e) {
-  lv_event_code_t code = lv_event_get_code(e);
-  lv_obj_t *btn = lv_event_get_target(e);
-  if (code == LV_EVENT_CLICKED) {
-    static uint8_t cnt = 0;
-    cnt++;
-
-    /*Get the first child of the button which is the label and change its text*/
-    lv_obj_t *label = lv_obj_get_child(btn, 0);
-    lv_label_set_text_fmt(label, "Button: %d", cnt);
-  }
-}
-
-void swipe_event_cb(lv_event_t *e) {
-  lv_dir_t dir = lv_indev_get_gesture_dir(lv_indev_get_act());
-  if (dir == 1)
-    ++display_index;
-  else if (dir == 2)
-    --display_index;
-
-  if (display_index > 6)
-    display_index = 0;
-  else if (display_index < 0)
-    display_index = 6;
-
-  ESP_LOGI(TAG, "dir: %d, index: %d", dir, display_index);
-  display_handler_.handle_screen(display_index);
 }
 
 extern "C" void app_main(void) {
@@ -100,8 +68,6 @@ extern "C" void app_main(void) {
   xTaskCreate(handle_display_task, "handle_display_task", 1024 * 6, NULL,
               DISPLAY_PRIORITY, NULL);
 
-  lv_obj_add_event_cb(ui_ScreenCamera, swipe_event_cb, LV_EVENT_GESTURE, NULL);
-  lv_obj_add_event_cb(ui_ScreenSensors, swipe_event_cb, LV_EVENT_GESTURE, NULL);
   // auto child_count = lv_obj_get_child_cnt(lv_scr_act());
 
   // ESP_LOGI(TAG, "%d", child_count);

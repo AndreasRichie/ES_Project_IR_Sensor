@@ -1,5 +1,8 @@
-SET(SOURCES screens/ui_ScreenCamera.c
+SET(SOURCES components/ui_comp_buttonminus.c
+    components/ui_comp.c
+    screens/ui_ScreenCamera.c
     screens/ui_ScreenSensors.c
+    screens/ui_ScreenLoRa.c
     ui.c
     components/ui_comp_hook.c
     ui_helpers.c

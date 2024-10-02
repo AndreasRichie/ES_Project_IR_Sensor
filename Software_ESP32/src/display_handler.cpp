@@ -43,27 +43,23 @@ const std::vector<uint16_t> camColors = {
 };
 
 display_handler::display_handler()
-    : tag("handle_display_task"), camera_label("Heat Image of IR Camera ") {}
+    : tag("handle_display_task"),
+      camera_label("Heat Image of IR Camera "),
+      display_index(0),
+      display_lora_settings(false),
+      is_join(false) {}
 
 display_handler::~display_handler() = default;
 
 void display_handler::init_display() {
   lv_port_init();
   ui_init();
-  handle_screen(0);
+  create_button_labels();
+  add_callbacks();
+  handle_screen();
 }
 
-void display_handler::handle_screen(const int display_index) {
-  if (display_index < 6)
-    handle_camera_screen_load(display_index);
-  else if (display_index == 6)
-    handle_values_screen_load();
-  else
-    ESP_LOGE(tag.c_str(), "An invalid display_index occured!");
-}
-
-void display_handler::handle_values(const measurement_data& sensor_data,
-                                    const int display_index) const {
+void display_handler::handle_values(const measurement_data& sensor_data) const {
   if (display_index < 6)
     handle_camera_screen(sensor_data, display_index);
   else if (display_index == 6)
@@ -71,6 +67,48 @@ void display_handler::handle_values(const measurement_data& sensor_data,
   else
     ESP_LOGE(tag.c_str(), "An invalid display_index occured!");
   vTaskDelay(pdMS_TO_TICKS(DISPLAY_INTERVAL_MS));
+}
+
+void display_handler::create_button_labels() {
+  for (unsigned int index = 0; index < PIXEL_COUNT; ++index) {
+    const auto pixel_object = lv_obj_get_child(ui_PixelGrid, index);
+    lv_label_create(pixel_object);
+  }
+  lv_label_set_text(lv_label_create(ui_ButtonMinus), "-");
+  lv_label_set_text(lv_label_create(ui_ButtonPlus), "+");
+  lv_label_create(ui_ButtonJoin);
+}
+
+static void btn_event_cb(lv_event_t* e) {
+  lv_event_code_t code = lv_event_get_code(e);
+  lv_obj_t* btn = lv_event_get_target(e);
+  if (code == LV_EVENT_CLICKED) {
+    static uint8_t cnt = 0;
+    cnt++;
+
+    /*Get the first child of the button which is the label and change its text*/
+    lv_obj_t* label = lv_obj_get_child(btn, 0);
+    lv_label_set_text_fmt(label, "Button: %d", cnt);
+  }
+}
+
+void display_handler::add_callbacks() {
+  auto event_cb = [](lv_event_t* e) {
+    auto handler = static_cast<display_handler*>(lv_event_get_user_data(e));
+    lv_event_code_t code = lv_event_get_code(e);
+    if (code == LV_EVENT_CLICKED) handler->join_button_pressed_cb(e);
+    if (code == LV_EVENT_GESTURE) handler->swipe_event_cb(e);
+  };
+
+  lv_obj_add_event_cb(ui_ScreenCamera, event_cb, LV_EVENT_GESTURE,
+                      static_cast<void*>(this));
+  lv_obj_add_event_cb(ui_ScreenSensors, event_cb, LV_EVENT_GESTURE,
+                      static_cast<void*>(this));
+  lv_obj_add_event_cb(ui_ScreenLoRa, event_cb, LV_EVENT_GESTURE,
+                      static_cast<void*>(this));
+
+  lv_obj_add_event_cb(ui_ButtonJoin, event_cb, LV_EVENT_CLICKED,
+                      static_cast<void*>(this));
 }
 
 void display_handler::handle_camera_screen(const measurement_data& sensor_data,
@@ -99,11 +137,7 @@ void display_handler::handle_pixel(const int camera_index,
                                    const unsigned int pixel_index,
                                    const measurement_data& sensor_data) const {
   const auto pixel_object = lv_obj_get_child(ui_PixelGrid, pixel_index);
-  lv_obj_t* button_label;
-  if (lv_obj_get_child_cnt(pixel_object) == 0)
-    button_label = lv_label_create(pixel_object);
-  else
-    button_label = lv_obj_get_child(pixel_object, 0);
+  lv_obj_t* button_label = lv_obj_get_child(pixel_object, 0);
   auto pixel_value = sensor_data.ir_camera_data[camera_index][pixel_index];
   lv_label_set_text_fmt(button_label, "%.2f", pixel_value);
   lv_obj_center(button_label);
@@ -121,13 +155,74 @@ void display_handler::handle_values_screen(
 
 void display_handler::handle_camera_screen_load(const int camera_index) {
   lv_disp_load_scr(ui_ScreenCamera);
-  // lv_obj_set_style_transform_pivot_x(ui_PixelGrid, 200, NULL);
-  // lv_obj_set_style_transform_pivot_y(ui_PixelGrid, 200, NULL);
-  // lv_obj_set_style_transform_angle(ui_PixelGrid, 2700, NULL);
   lv_label_set_text_fmt(ui_TitleCamera, "%s%d", camera_label.c_str(),
                         camera_index + 1);
 }
 
 void display_handler::handle_values_screen_load() {
   lv_disp_load_scr(ui_ScreenSensors);
+}
+
+void display_handler::handle_lora_settings_screen_load() {
+  lv_disp_load_scr(ui_ScreenLoRa);
+  lv_obj_t* button_label = lv_obj_get_child(ui_ButtonJoin, 0);
+  lv_label_set_text(button_label, get_join_button_string().c_str());
+  lv_obj_center(button_label);
+}
+
+std::string display_handler::get_join_button_string() const {
+  return is_join ? "Stop Join" : "Join";
+}
+
+void display_handler::handle_screen() {
+  if (display_lora_settings)
+    handle_lora_settings_screen_load();
+  else if (display_index < 6)
+    handle_camera_screen_load(display_index);
+  else if (display_index == 6)
+    handle_values_screen_load();
+  else
+    ESP_LOGE(tag.c_str(), "An invalid display_index occured!");
+}
+
+void display_handler::join_button_pressed_cb(lv_event_t* e) {
+  /*Get the first child of the button which is the label and change its text*/
+  lv_obj_t* label = lv_obj_get_child(ui_ButtonJoin, 0);
+  if (is_join) {
+    is_join = false;
+    /* Enable buttons */
+    lv_obj_clear_state(ui_ButtonMinus, LV_STATE_DISABLED);
+    lv_obj_clear_state(ui_ButtonPlus, LV_STATE_DISABLED);
+  } else {
+    is_join = true;
+    /* Disable buttons */
+    lv_obj_add_state(ui_ButtonMinus, LV_STATE_DISABLED);
+    lv_obj_add_state(ui_ButtonPlus, LV_STATE_DISABLED);
+  }
+  lv_label_set_text(label, get_join_button_string().c_str());
+}
+
+void display_handler::swipe_event_cb(lv_event_t* e) {
+  lv_dir_t dir = lv_indev_get_gesture_dir(lv_indev_get_act());
+  // up
+  if (dir == 4)
+    display_lora_settings = false;
+  else if (!display_lora_settings) {
+    // left
+    if (dir == 1) ++display_index;
+    // right
+    else if (dir == 2)
+      --display_index;
+    // down
+    else if (dir == 8)
+      display_lora_settings = true;
+  }
+
+  if (display_index > 6)
+    display_index = 0;
+  else if (display_index < 0)
+    display_index = 6;
+
+  // ESP_LOGI(tag.c_str(), "dir: %d, index: %d", dir, display_index);
+  handle_screen();
 }

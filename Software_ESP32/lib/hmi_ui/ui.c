@@ -97,6 +97,27 @@ lv_obj_t * ui_AirHumText;
 lv_obj_t * ui_AirHumDisplay;
 lv_obj_t * ui_Value2;
 lv_obj_t * ui_Unit2;
+
+
+// SCREEN: ui_ScreenLoRa
+void ui_ScreenLoRa_screen_init(void);
+lv_obj_t * ui_ScreenLoRa;
+lv_obj_t * ui_TitleLoRa;
+lv_obj_t * ui_ContainerSettings;
+lv_obj_t * ui_LabelInterval;
+lv_obj_t * ui_ContainerInterval;
+void ui_event_ButtonMinus(lv_event_t * e);
+lv_obj_t * ui_ButtonMinus;
+lv_obj_t * ui_ValueInterval;
+void ui_event_ButtonPlus(lv_event_t * e);
+lv_obj_t * ui_ButtonPlus;
+lv_obj_t * ui_LabelDevEUI;
+lv_obj_t * ui_ValueDevEUI;
+lv_obj_t * ui_LabelJoinEUI;
+lv_obj_t * ui_ValueJoinEUI;
+lv_obj_t * ui_LabelAppKey;
+lv_obj_t * ui_ValueAppKey;
+lv_obj_t * ui_ButtonJoin;
 lv_obj_t * ui____initial_actions0;
 const lv_img_dsc_t * ui_imgset_location[1] = {&ui_img_location2_png};
 
@@ -111,17 +132,36 @@ const lv_img_dsc_t * ui_imgset_location[1] = {&ui_img_location2_png};
 ///////////////////// ANIMATIONS ////////////////////
 
 ///////////////////// FUNCTIONS ////////////////////
+void ui_event_ButtonMinus(lv_event_t * e)
+{
+    lv_event_code_t event_code = lv_event_get_code(e);
+    lv_obj_t * target = lv_event_get_target(e);
+    if(event_code == LV_EVENT_CLICKED) {
+        _ui_spinbox_step(ui_ValueInterval, -1);
+    }
+}
+void ui_event_ButtonPlus(lv_event_t * e)
+{
+    lv_event_code_t event_code = lv_event_get_code(e);
+    lv_obj_t * target = lv_event_get_target(e);
+    if(event_code == LV_EVENT_CLICKED) {
+        _ui_spinbox_step(ui_ValueInterval, 1);
+    }
+}
 
 ///////////////////// SCREENS ////////////////////
 
 void ui_init(void)
 {
+    LV_EVENT_GET_COMP_CHILD = lv_event_register_id();
+
     lv_disp_t * dispp = lv_disp_get_default();
     lv_theme_t * theme = lv_theme_default_init(dispp, lv_palette_main(LV_PALETTE_BLUE), lv_palette_main(LV_PALETTE_RED),
                                                true, LV_FONT_DEFAULT);
     lv_disp_set_theme(dispp, theme);
     ui_ScreenCamera_screen_init();
     ui_ScreenSensors_screen_init();
+    ui_ScreenLoRa_screen_init();
     ui____initial_actions0 = lv_obj_create(NULL);
     lv_disp_load_scr(ui_ScreenCamera);
 }

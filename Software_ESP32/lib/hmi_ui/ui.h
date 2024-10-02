@@ -13,6 +13,8 @@ extern "C" {
 #include "lvgl/lvgl.h"
 
 #include "ui_helpers.h"
+#include "components/ui_comp.h"
+#include "components/ui_comp_hook.h"
 #include "ui_events.h"
 
 // SCREEN: ui_ScreenCamera
@@ -101,6 +103,25 @@ extern lv_obj_t * ui_AirHumText;
 extern lv_obj_t * ui_AirHumDisplay;
 extern lv_obj_t * ui_Value2;
 extern lv_obj_t * ui_Unit2;
+// SCREEN: ui_ScreenLoRa
+void ui_ScreenLoRa_screen_init(void);
+extern lv_obj_t * ui_ScreenLoRa;
+extern lv_obj_t * ui_TitleLoRa;
+extern lv_obj_t * ui_ContainerSettings;
+extern lv_obj_t * ui_LabelInterval;
+extern lv_obj_t * ui_ContainerInterval;
+void ui_event_ButtonMinus(lv_event_t * e);
+extern lv_obj_t * ui_ButtonMinus;
+extern lv_obj_t * ui_ValueInterval;
+void ui_event_ButtonPlus(lv_event_t * e);
+extern lv_obj_t * ui_ButtonPlus;
+extern lv_obj_t * ui_LabelDevEUI;
+extern lv_obj_t * ui_ValueDevEUI;
+extern lv_obj_t * ui_LabelJoinEUI;
+extern lv_obj_t * ui_ValueJoinEUI;
+extern lv_obj_t * ui_LabelAppKey;
+extern lv_obj_t * ui_ValueAppKey;
+extern lv_obj_t * ui_ButtonJoin;
 extern lv_obj_t * ui____initial_actions0;
 
 
