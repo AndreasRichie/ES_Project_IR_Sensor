@@ -3,6 +3,7 @@
 
 #pragma once
 
+#include "lorawan_handler.h"
 #include "lvgl.h"
 #include "measurement_data.h"
 
@@ -12,7 +13,7 @@
 
 class display_handler {
  public:
-  display_handler();
+  display_handler(lorawan_handler& lorwawan);
   ~display_handler();
   void init_display();
   void handle_values(const measurement_data& sensor_data) const;
@@ -40,6 +41,7 @@ class display_handler {
  private:
   const std::string tag;
   const std::string camera_label;
+  lorawan_handler& lorawan_handler_;
   int display_index;
   bool display_lora_settings;
   bool is_join;

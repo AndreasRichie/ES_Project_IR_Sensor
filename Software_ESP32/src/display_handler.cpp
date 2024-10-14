@@ -3,6 +3,8 @@
 #include <math.h>
 #include <ui.h>
 
+#include <iomanip>
+#include <sstream>
 #include <vector>
 
 #include "esp_log.h"
@@ -42,9 +44,10 @@ const std::vector<uint16_t> camColors = {
     0xF060, 0xF040, 0xF020, 0xF800,
 };
 
-display_handler::display_handler()
+display_handler::display_handler(lorawan_handler& lorwawan)
     : tag("handle_display_task"),
       camera_label("Heat Image of IR Camera "),
+      lorawan_handler_(lorwawan),
       display_index(0),
       display_lora_settings(false),
       is_join(false) {}
@@ -77,19 +80,6 @@ void display_handler::create_button_labels() {
   lv_label_set_text(lv_label_create(ui_ButtonMinus), "-");
   lv_label_set_text(lv_label_create(ui_ButtonPlus), "+");
   lv_label_create(ui_ButtonJoin);
-}
-
-static void btn_event_cb(lv_event_t* e) {
-  lv_event_code_t code = lv_event_get_code(e);
-  lv_obj_t* btn = lv_event_get_target(e);
-  if (code == LV_EVENT_CLICKED) {
-    static uint8_t cnt = 0;
-    cnt++;
-
-    /*Get the first child of the button which is the label and change its text*/
-    lv_obj_t* label = lv_obj_get_child(btn, 0);
-    lv_label_set_text_fmt(label, "Button: %d", cnt);
-  }
 }
 
 void display_handler::add_callbacks() {
@@ -163,11 +153,36 @@ void display_handler::handle_values_screen_load() {
   lv_disp_load_scr(ui_ScreenSensors);
 }
 
+std::string vector_to_string(const std::vector<uint8_t>& data) {
+  std::stringstream string_result;
+  string_result << std::hex << std::setfill('0');
+  for (const auto& element : data) {
+    string_result << std::setw(2) << static_cast<unsigned int>(element);
+  }
+  return string_result.str();
+}
+
 void display_handler::handle_lora_settings_screen_load() {
   lv_disp_load_scr(ui_ScreenLoRa);
   lv_obj_t* button_label = lv_obj_get_child(ui_ButtonJoin, 0);
   lv_label_set_text(button_label, get_join_button_string().c_str());
   lv_obj_center(button_label);
+  const auto config = lorawan_handler_.get_lorawan_config();
+  lv_label_set_text(ui_ValueDevEUI,
+                    vector_to_string(std::vector<uint8_t>{config.eui.begin(),
+                                                          config.eui.end()})
+                        .c_str());
+  lv_label_set_text(
+      ui_ValueJoinEUI,
+      vector_to_string(
+          std::vector<uint8_t>{config.join_eui.begin(), config.join_eui.end()})
+          .c_str());
+  lv_label_set_text(ui_ValueAppKey, vector_to_string(std::vector<uint8_t>{
+                                                         config.app_key.begin(),
+                                                         config.app_key.end()})
+                                        .c_str());
+  lv_spinbox_set_value(ui_ValueInterval,
+                       static_cast<int32_t>(config.uplink_interval_min));
 }
 
 std::string display_handler::get_join_button_string() const {
@@ -198,6 +213,8 @@ void display_handler::join_button_pressed_cb(lv_event_t* e) {
     /* Disable buttons */
     lv_obj_add_state(ui_ButtonMinus, LV_STATE_DISABLED);
     lv_obj_add_state(ui_ButtonPlus, LV_STATE_DISABLED);
+    lorawan_handler_.set_uplink_interval(
+        static_cast<uint32_t>(lv_spinbox_get_value(ui_ValueInterval)));
   }
   lv_label_set_text(label, get_join_button_string().c_str());
 }
@@ -205,9 +222,11 @@ void display_handler::join_button_pressed_cb(lv_event_t* e) {
 void display_handler::swipe_event_cb(lv_event_t* e) {
   lv_dir_t dir = lv_indev_get_gesture_dir(lv_indev_get_act());
   // up
-  if (dir == 4)
+  if (dir == 4) {
     display_lora_settings = false;
-  else if (!display_lora_settings) {
+    lorawan_handler_.set_uplink_interval(
+        static_cast<uint32_t>(lv_spinbox_get_value(ui_ValueInterval)));
+  } else if (!display_lora_settings) {
     // left
     if (dir == 1) ++display_index;
     // right

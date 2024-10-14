@@ -12,6 +12,7 @@
 #include "esp_log.h"
 #include "freertos/FreeRTOS.h"
 #include "freertos/task.h"
+#include "lorawan_handler.h"
 #include "lv_port.h"
 #include "lvgl.h"
 #include "uart_handler.h"
@@ -28,7 +29,8 @@
 static const char *TAG = "app_main";
 
 uart_handler uart_handler_;
-display_handler display_handler_;
+lorawan_handler lorawan_handler_;
+display_handler display_handler_(lorawan_handler_);
 
 ESP_EVENT_DEFINE_BASE(VIEW_EVENT_BASE);
 esp_event_loop_handle_t view_event_handle;
@@ -58,6 +60,7 @@ extern "C" void app_main(void) {
   uart_handler_.init_uart();
   ESP_ERROR_CHECK(bsp_board_init());
   display_handler_.init_display();
+  lorawan_handler_.init_lorawan();
 
 #if DEBUG_VALUES
   xTaskCreate(print_values_task, "print_values_task", 1024 * 6, NULL,
