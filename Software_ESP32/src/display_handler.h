@@ -7,7 +7,7 @@
 #include "lvgl.h"
 #include "measurement_data.h"
 
-#define MINTEMP 20
+#define MINTEMP 15
 #define MAXTEMP 35
 #define DISPLAY_INTERVAL_MS 100
 
