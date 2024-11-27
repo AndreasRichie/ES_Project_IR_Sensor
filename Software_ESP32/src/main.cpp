@@ -19,12 +19,13 @@
 
 #define PRINT_INTERVAL_MS 5000
 
-#define DEBUG_VALUES 1
+#define DEBUG_VALUES 0
 #define PRINT_PIXELS 0
 
 #define DEBUG_PRINT_PRIORITY 0
 #define READ_PRIORITY (configMAX_PRIORITIES - 1)
-#define DISPLAY_PRIORITY (configMAX_PRIORITIES - 2)
+#define SEND_PRIORITY (configMAX_PRIORITIES - 2)
+#define DISPLAY_PRIORITY (configMAX_PRIORITIES - 3)
 
 static const char *TAG = "app_main";
 
@@ -38,6 +39,7 @@ esp_event_loop_handle_t view_event_handle;
 static void read_uart_task(void *arg) {
   while (1) {
     uart_handler_.read_from_sensor();
+    lorawan_handler_.set_values(uart_handler_.get_last_read_data());
   }
 }
 
@@ -56,6 +58,12 @@ static void handle_display_task(void *arg) {
   }
 }
 
+static void handle_lorawan_task(void *arg) {
+  while (1) {
+    lorawan_handler_.handle_lorawan();
+  }
+}
+
 extern "C" void app_main(void) {
   uart_handler_.init_uart();
   ESP_ERROR_CHECK(bsp_board_init());
@@ -70,6 +78,8 @@ extern "C" void app_main(void) {
               NULL);
   xTaskCreate(handle_display_task, "handle_display_task", 1024 * 6, NULL,
               DISPLAY_PRIORITY, NULL);
+  xTaskCreate(handle_lorawan_task, "handle_lorawan_task", 1024 * 6, NULL,
+              SEND_PRIORITY, NULL);
 
   // auto child_count = lv_obj_get_child_cnt(lv_scr_act());
 

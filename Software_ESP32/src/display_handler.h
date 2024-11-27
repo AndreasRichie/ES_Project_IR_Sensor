@@ -31,7 +31,8 @@ class display_handler {
   void handle_camera_screen_load(const int camera_index);
   void handle_values_screen_load();
   void handle_lora_settings_screen_load();
-  std::string get_join_button_string() const;
+  std::string get_join_button_string(const bool state) const;
+  void handle_join_display(const bool is_join) const;
 
   void handle_screen();
 
@@ -44,7 +45,6 @@ class display_handler {
   lorawan_handler& lorawan_handler_;
   int display_index;
   bool display_lora_settings;
-  bool is_join;
 };
 
 #endif

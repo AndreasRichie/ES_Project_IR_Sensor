@@ -17,7 +17,7 @@ struct measurement_data {
   float air_rH;
   float surface_temp;
 
-  const std::string tag = "measurement_data";
+  std::string tag = "measurement_data";
   void print_to_serial(const bool &pixels);
 };
 

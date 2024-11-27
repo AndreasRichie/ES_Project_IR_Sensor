@@ -49,8 +49,7 @@ display_handler::display_handler(lorawan_handler& lorwawan)
       camera_label("Heat Image of IR Camera "),
       lorawan_handler_(lorwawan),
       display_index(0),
-      display_lora_settings(false),
-      is_join(false) {}
+      display_lora_settings(false) {}
 
 display_handler::~display_handler() = default;
 
@@ -164,10 +163,8 @@ std::string vector_to_string(const std::vector<uint8_t>& data) {
 
 void display_handler::handle_lora_settings_screen_load() {
   lv_disp_load_scr(ui_ScreenLoRa);
-  lv_obj_t* button_label = lv_obj_get_child(ui_ButtonJoin, 0);
-  lv_label_set_text(button_label, get_join_button_string().c_str());
-  lv_obj_center(button_label);
   const auto config = lorawan_handler_.get_lorawan_config();
+  handle_join_display(config.join);
   lv_label_set_text(ui_ValueDevEUI,
                     vector_to_string(std::vector<uint8_t>{config.eui.begin(),
                                                           config.eui.end()})
@@ -185,8 +182,24 @@ void display_handler::handle_lora_settings_screen_load() {
                        static_cast<int32_t>(config.uplink_interval_min));
 }
 
-std::string display_handler::get_join_button_string() const {
-  return is_join ? "Stop Join" : "Join";
+std::string display_handler::get_join_button_string(const bool state) const {
+  return state ? "Stop Join" : "Join";
+}
+
+void display_handler::handle_join_display(const bool is_join) const {
+  if (is_join) {
+    /* Disable buttons */
+    lv_obj_add_state(ui_ButtonMinus, LV_STATE_DISABLED);
+    lv_obj_add_state(ui_ButtonPlus, LV_STATE_DISABLED);
+  } else {
+    /* Enable buttons */
+    lv_obj_clear_state(ui_ButtonMinus, LV_STATE_DISABLED);
+    lv_obj_clear_state(ui_ButtonPlus, LV_STATE_DISABLED);
+  }
+  /*Get the first child of the button which is the label and change its text*/
+  lv_obj_t* label = lv_obj_get_child(ui_ButtonJoin, 0);
+  lv_label_set_text(label, get_join_button_string(is_join).c_str());
+  lv_obj_center(label);
 }
 
 void display_handler::handle_screen() {
@@ -201,22 +214,13 @@ void display_handler::handle_screen() {
 }
 
 void display_handler::join_button_pressed_cb(lv_event_t* e) {
-  /*Get the first child of the button which is the label and change its text*/
-  lv_obj_t* label = lv_obj_get_child(ui_ButtonJoin, 0);
-  if (is_join) {
-    is_join = false;
-    /* Enable buttons */
-    lv_obj_clear_state(ui_ButtonMinus, LV_STATE_DISABLED);
-    lv_obj_clear_state(ui_ButtonPlus, LV_STATE_DISABLED);
-  } else {
-    is_join = true;
-    /* Disable buttons */
-    lv_obj_add_state(ui_ButtonMinus, LV_STATE_DISABLED);
-    lv_obj_add_state(ui_ButtonPlus, LV_STATE_DISABLED);
+  bool join_state = lorawan_handler_.get_join();
+  join_state = !join_state;
+  handle_join_display(join_state);
+  if (join_state)
     lorawan_handler_.set_uplink_interval(
         static_cast<uint32_t>(lv_spinbox_get_value(ui_ValueInterval)));
-  }
-  lv_label_set_text(label, get_join_button_string().c_str());
+  lorawan_handler_.set_join(join_state);
 }
 
 void display_handler::swipe_event_cb(lv_event_t* e) {
