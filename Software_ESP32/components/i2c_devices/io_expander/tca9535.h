@@ -21,13 +21,13 @@
 
 #pragma once
 
+#include <esp_err.h>
+#include <stdbool.h>
 #include <stdint.h>
-
 
 #ifdef __cplusplus
 extern "C" {
 #endif
-
 
 esp_err_t tca9535_init(uint8_t i2c_addr);
 esp_err_t tca9535_set_direction(uint8_t pin, bool is_output);

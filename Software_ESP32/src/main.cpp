@@ -27,7 +27,7 @@
 #define SEND_PRIORITY (configMAX_PRIORITIES - 2)
 #define DISPLAY_PRIORITY (configMAX_PRIORITIES - 3)
 
-static const char *TAG = "app_main";
+// static const char *TAG = "app_main";
 
 uart_handler uart_handler_;
 lorawan_handler lorawan_handler_;

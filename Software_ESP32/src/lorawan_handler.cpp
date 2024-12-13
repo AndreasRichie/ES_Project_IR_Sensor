@@ -474,14 +474,9 @@ void lorawan_handler::prepare_tx_frame() {
   app_data.Buffer[index] = packet_count;
   ++index;
 
-  for (const auto &value_float : values_to_send) {
-    uint32_t value_int = 0;
-    static_assert(sizeof(float) == 4);
-    memcpy(&value_int, &value_float, 4);
-    app_data.Buffer[index++] = (value_int) & 0xff;
+  for (const auto &value_int : values_to_send) {
     app_data.Buffer[index++] = ((value_int) >> 8) & 0xff;
-    app_data.Buffer[index++] = ((value_int) >> 16) & 0xff;
-    app_data.Buffer[index++] = ((value_int) >> 24) & 0xff;
+    app_data.Buffer[index++] = (value_int) & 0xff;
   }
 
   xSemaphoreGive(data_mutex);
@@ -496,27 +491,27 @@ void lorawan_handler::prepare_tx_frame() {
   }
 }
 
+uint16_t lorawan_handler::convert_float_to_int(const float to_convert,
+                                               const uint8_t precision) const {
+  // precision 0 --> multiply by 1 and then convert to int to have 0 decimal
+  // precision precision 1 --> multiply by 10 and then convert to int to have 1
+  // decimal precision
+  return static_cast<uint16_t>(std::pow(10, precision) * to_convert);
+}
+
 lorawan_handler::values_vector lorawan_handler::get_values_for_type(
     const value_types_lora &type) {
   const uint8_t type_as_int = static_cast<uint8_t>(type);
   ESP_LOGI(tag.c_str(), "get values for packet with type: %d", type_as_int);
 
   switch (type) {
-    case value_types_lora::ir_camera_1_part_1:
-    case value_types_lora::ir_camera_2_part_1:
-    case value_types_lora::ir_camera_3_part_1:
-    case value_types_lora::ir_camera_4_part_1:
-    case value_types_lora::ir_camera_5_part_1:
-    case value_types_lora::ir_camera_6_part_1:
-      return get_pixels_for_camera(type_as_int / 2, false);
-
-    case value_types_lora::ir_camera_1_part_2:
-    case value_types_lora::ir_camera_2_part_2:
-    case value_types_lora::ir_camera_3_part_2:
-    case value_types_lora::ir_camera_4_part_2:
-    case value_types_lora::ir_camera_5_part_2:
-    case value_types_lora::ir_camera_6_part_2:
-      return get_pixels_for_camera((type_as_int - 1) / 2, true);
+    case value_types_lora::ir_camera_1:
+    case value_types_lora::ir_camera_2:
+    case value_types_lora::ir_camera_3:
+    case value_types_lora::ir_camera_4:
+    case value_types_lora::ir_camera_5:
+    case value_types_lora::ir_camera_6:
+      return get_pixels_for_camera(type_as_int);
 
     case value_types_lora::sensor_values:
       return get_values_combined();
@@ -528,19 +523,17 @@ lorawan_handler::values_vector lorawan_handler::get_values_for_type(
 }
 
 lorawan_handler::values_vector lorawan_handler::get_pixels_for_camera(
-    const uint8_t camera_index, const bool second_half) {
+    const uint8_t camera_index) {
   if (!values.has_value()) {
     ESP_LOGE(tag.c_str(), "No values to handle!");
     return values_vector();
   }
 
   values_vector pixel_values;
-  const uint8_t start = second_half ? 0 : PIXEL_COUNT / 2;
-  const uint8_t end = second_half ? PIXEL_COUNT / 2 : PIXEL_COUNT;
 
-  for (uint8_t pixel_index = start; pixel_index < end; ++pixel_index)
-    pixel_values.push_back(
-        values.value().ir_camera_data[camera_index][pixel_index]);
+  for (uint8_t pixel_index = 0; pixel_index < PIXEL_COUNT; ++pixel_index)
+    pixel_values.push_back(convert_float_to_int(
+        values.value().ir_camera_data[camera_index][pixel_index], 1));
 
   return pixel_values;
 }
@@ -558,17 +551,19 @@ lorawan_handler::values_vector lorawan_handler::get_values_combined() {
        index <= static_cast<uint8_t>(combined_value_types::ir_camera_6_mean);
        ++index) {
     sensor_values.push_back(index);
-    sensor_values.push_back(values.value().ir_camera_means[index]);
+    sensor_values.push_back(
+        convert_float_to_int(values.value().ir_camera_means[index], 1));
   }
 
   sensor_values.push_back(
-      static_cast<float>(combined_value_types::air_temperature));
-  sensor_values.push_back(values.value().air_temp);
+      static_cast<uint16_t>(combined_value_types::air_temperature));
+  sensor_values.push_back(convert_float_to_int(values.value().air_temp, 1));
   sensor_values.push_back(
-      static_cast<float>(combined_value_types::air_humidity));
-  sensor_values.push_back(values.value().air_rH);
+      static_cast<uint16_t>(combined_value_types::air_humidity));
+  sensor_values.push_back(convert_float_to_int(values.value().air_rH, 0));
   sensor_values.push_back(
-      static_cast<float>(combined_value_types::surface_temperature));
-  sensor_values.push_back(values.value().surface_temp);
+      static_cast<uint16_t>(combined_value_types::surface_temperature));
+  sensor_values.push_back(convert_float_to_int(values.value().surface_temp, 1));
+
   return sensor_values;
 }

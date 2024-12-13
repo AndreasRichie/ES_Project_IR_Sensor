@@ -19,7 +19,7 @@
 
 #define DEFAULT_UPLINK_INTERVAL 5
 
-#define FIRMWARE_VERSION 0x01000000  // 1.0.0.0
+#define FIRMWARE_VERSION 0x01000000L  // 1.0.0.0
 
 /*!
  * LoRaWAN Adaptive Data Rate
@@ -72,31 +72,6 @@
  */
 #define APP_TX_DUTYCYCLE_RND 2000
 
-// #define IR_CAMERA_1_PART_1 0
-// #define IR_CAMERA_1_PART_2 1
-// #define IR_CAMERA_2_PART_1 2
-// #define IR_CAMERA_2_PART_2 3
-// #define IR_CAMERA_3_PART_1 4
-// #define IR_CAMERA_3_PART_2 5
-// #define IR_CAMERA_4_PART_1 6
-// #define IR_CAMERA_4_PART_2 7
-// #define IR_CAMERA_5_PART_1 8
-// #define IR_CAMERA_5_PART_2 9
-// #define IR_CAMERA_6_PART_1 10
-// #define IR_CAMERA_6_PART_2 11
-// #define SENSOR_VALUES 12
-// #define VALUES_MAX_INDEX 13
-
-// #define IR_CAMERA_1_MEAN 0
-// #define IR_CAMERA_2_MEAN 1
-// #define IR_CAMERA_3_MEAN 2
-// #define IR_CAMERA_4_MEAN 3
-// #define IR_CAMERA_5_MEAN 4
-// #define IR_CAMERA_6_MEAN 5
-// #define SENSOR_AIR_TEMP 6
-// #define SENSOR_AIR_HUM 7
-// #define SENSOR_SURF_TEMP 8
-
 class lorawan_handler {
  public:
   struct lorawan_config {
@@ -107,19 +82,14 @@ class lorawan_handler {
     bool join = false;
   };
 
+  // change to send uint16 instead of float
   enum struct value_types_lora {
-    ir_camera_1_part_1,
-    ir_camera_1_part_2,
-    ir_camera_2_part_1,
-    ir_camera_2_part_2,
-    ir_camera_3_part_1,
-    ir_camera_3_part_2,
-    ir_camera_4_part_1,
-    ir_camera_4_part_2,
-    ir_camera_5_part_1,
-    ir_camera_5_part_2,
-    ir_camera_6_part_1,
-    ir_camera_6_part_2,
+    ir_camera_1,
+    ir_camera_2,
+    ir_camera_3,
+    ir_camera_4,
+    ir_camera_5,
+    ir_camera_6,
     sensor_values,
     max_value_types_lora
   };
@@ -161,10 +131,11 @@ class lorawan_handler {
   bool deinit_lora_mac();
   void process_uplink();
   void prepare_tx_frame();
-  using values_vector = std::vector<float>;
+  using values_vector = std::vector<uint16_t>;
+  uint16_t convert_float_to_int(const float to_convert,
+                                const uint8_t precision) const;
   values_vector get_values_for_type(const value_types_lora& type);
-  values_vector get_pixels_for_camera(const uint8_t camera_index,
-                                      const bool second_half);
+  values_vector get_pixels_for_camera(const uint8_t camera_index);
   values_vector get_values_combined();
 
  private:

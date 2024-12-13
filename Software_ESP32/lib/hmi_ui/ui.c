@@ -4,164 +4,158 @@
 // Project name: SquareLine_Project
 
 #include "ui.h"
+
 #include "ui_helpers.h"
 
 ///////////////////// VARIABLES ////////////////////
 
-
 // SCREEN: ui_ScreenCamera
 void ui_ScreenCamera_screen_init(void);
-lv_obj_t * ui_ScreenCamera;
-lv_obj_t * ui_PixelGrid;
-lv_obj_t * ui_Pixel1;
-lv_obj_t * ui_Pixel2;
-lv_obj_t * ui_Pixel3;
-lv_obj_t * ui_Pixel4;
-lv_obj_t * ui_Pixel5;
-lv_obj_t * ui_Pixel6;
-lv_obj_t * ui_Pixel7;
-lv_obj_t * ui_Pixel8;
-lv_obj_t * ui_Pixel9;
-lv_obj_t * ui_Pixel10;
-lv_obj_t * ui_Pixel11;
-lv_obj_t * ui_Pixel12;
-lv_obj_t * ui_Pixel13;
-lv_obj_t * ui_Pixel14;
-lv_obj_t * ui_Pixel15;
-lv_obj_t * ui_Pixel16;
-lv_obj_t * ui_Pixel17;
-lv_obj_t * ui_Pixel18;
-lv_obj_t * ui_Pixel19;
-lv_obj_t * ui_Pixel20;
-lv_obj_t * ui_Pixel21;
-lv_obj_t * ui_Pixel22;
-lv_obj_t * ui_Pixel23;
-lv_obj_t * ui_Pixel24;
-lv_obj_t * ui_Pixel25;
-lv_obj_t * ui_Pixel26;
-lv_obj_t * ui_Pixel27;
-lv_obj_t * ui_Pixel28;
-lv_obj_t * ui_Pixel29;
-lv_obj_t * ui_Pixel30;
-lv_obj_t * ui_Pixel31;
-lv_obj_t * ui_Pixel32;
-lv_obj_t * ui_Pixel33;
-lv_obj_t * ui_Pixel34;
-lv_obj_t * ui_Pixel35;
-lv_obj_t * ui_Pixel36;
-lv_obj_t * ui_Pixel37;
-lv_obj_t * ui_Pixel38;
-lv_obj_t * ui_Pixel39;
-lv_obj_t * ui_Pixel40;
-lv_obj_t * ui_Pixel41;
-lv_obj_t * ui_Pixel42;
-lv_obj_t * ui_Pixel43;
-lv_obj_t * ui_Pixel44;
-lv_obj_t * ui_Pixel45;
-lv_obj_t * ui_Pixel46;
-lv_obj_t * ui_Pixel47;
-lv_obj_t * ui_Pixel48;
-lv_obj_t * ui_Pixel49;
-lv_obj_t * ui_Pixel50;
-lv_obj_t * ui_Pixel51;
-lv_obj_t * ui_Pixel52;
-lv_obj_t * ui_Pixel53;
-lv_obj_t * ui_Pixel54;
-lv_obj_t * ui_Pixel55;
-lv_obj_t * ui_Pixel56;
-lv_obj_t * ui_Pixel57;
-lv_obj_t * ui_Pixel58;
-lv_obj_t * ui_Pixel59;
-lv_obj_t * ui_Pixel60;
-lv_obj_t * ui_Pixel61;
-lv_obj_t * ui_Pixel62;
-lv_obj_t * ui_Pixel63;
-lv_obj_t * ui_Pixel64;
-lv_obj_t * ui_TitleCamera;
-
+lv_obj_t* ui_ScreenCamera;
+lv_obj_t* ui_PixelGrid;
+lv_obj_t* ui_Pixel1;
+lv_obj_t* ui_Pixel2;
+lv_obj_t* ui_Pixel3;
+lv_obj_t* ui_Pixel4;
+lv_obj_t* ui_Pixel5;
+lv_obj_t* ui_Pixel6;
+lv_obj_t* ui_Pixel7;
+lv_obj_t* ui_Pixel8;
+lv_obj_t* ui_Pixel9;
+lv_obj_t* ui_Pixel10;
+lv_obj_t* ui_Pixel11;
+lv_obj_t* ui_Pixel12;
+lv_obj_t* ui_Pixel13;
+lv_obj_t* ui_Pixel14;
+lv_obj_t* ui_Pixel15;
+lv_obj_t* ui_Pixel16;
+lv_obj_t* ui_Pixel17;
+lv_obj_t* ui_Pixel18;
+lv_obj_t* ui_Pixel19;
+lv_obj_t* ui_Pixel20;
+lv_obj_t* ui_Pixel21;
+lv_obj_t* ui_Pixel22;
+lv_obj_t* ui_Pixel23;
+lv_obj_t* ui_Pixel24;
+lv_obj_t* ui_Pixel25;
+lv_obj_t* ui_Pixel26;
+lv_obj_t* ui_Pixel27;
+lv_obj_t* ui_Pixel28;
+lv_obj_t* ui_Pixel29;
+lv_obj_t* ui_Pixel30;
+lv_obj_t* ui_Pixel31;
+lv_obj_t* ui_Pixel32;
+lv_obj_t* ui_Pixel33;
+lv_obj_t* ui_Pixel34;
+lv_obj_t* ui_Pixel35;
+lv_obj_t* ui_Pixel36;
+lv_obj_t* ui_Pixel37;
+lv_obj_t* ui_Pixel38;
+lv_obj_t* ui_Pixel39;
+lv_obj_t* ui_Pixel40;
+lv_obj_t* ui_Pixel41;
+lv_obj_t* ui_Pixel42;
+lv_obj_t* ui_Pixel43;
+lv_obj_t* ui_Pixel44;
+lv_obj_t* ui_Pixel45;
+lv_obj_t* ui_Pixel46;
+lv_obj_t* ui_Pixel47;
+lv_obj_t* ui_Pixel48;
+lv_obj_t* ui_Pixel49;
+lv_obj_t* ui_Pixel50;
+lv_obj_t* ui_Pixel51;
+lv_obj_t* ui_Pixel52;
+lv_obj_t* ui_Pixel53;
+lv_obj_t* ui_Pixel54;
+lv_obj_t* ui_Pixel55;
+lv_obj_t* ui_Pixel56;
+lv_obj_t* ui_Pixel57;
+lv_obj_t* ui_Pixel58;
+lv_obj_t* ui_Pixel59;
+lv_obj_t* ui_Pixel60;
+lv_obj_t* ui_Pixel61;
+lv_obj_t* ui_Pixel62;
+lv_obj_t* ui_Pixel63;
+lv_obj_t* ui_Pixel64;
+lv_obj_t* ui_TitleCamera;
 
 // SCREEN: ui_ScreenSensors
 void ui_ScreenSensors_screen_init(void);
-lv_obj_t * ui_ScreenSensors;
-lv_obj_t * ui_TitleSensorValues;
-lv_obj_t * ui_SensorValueLabels;
-lv_obj_t * ui_SurfaceTempText;
-lv_obj_t * ui_SurfaceTempDisplay;
-lv_obj_t * ui_Value;
-lv_obj_t * ui_Unit;
-lv_obj_t * ui_AirTempText;
-lv_obj_t * ui_AirTempDisplay;
-lv_obj_t * ui_Value1;
-lv_obj_t * ui_Unit1;
-lv_obj_t * ui_AirHumText;
-lv_obj_t * ui_AirHumDisplay;
-lv_obj_t * ui_Value2;
-lv_obj_t * ui_Unit2;
-
+lv_obj_t* ui_ScreenSensors;
+lv_obj_t* ui_TitleSensorValues;
+lv_obj_t* ui_SensorValueLabels;
+lv_obj_t* ui_SurfaceTempText;
+lv_obj_t* ui_SurfaceTempDisplay;
+lv_obj_t* ui_Value;
+lv_obj_t* ui_Unit;
+lv_obj_t* ui_AirTempText;
+lv_obj_t* ui_AirTempDisplay;
+lv_obj_t* ui_Value1;
+lv_obj_t* ui_Unit1;
+lv_obj_t* ui_AirHumText;
+lv_obj_t* ui_AirHumDisplay;
+lv_obj_t* ui_Value2;
+lv_obj_t* ui_Unit2;
 
 // SCREEN: ui_ScreenLoRa
 void ui_ScreenLoRa_screen_init(void);
-lv_obj_t * ui_ScreenLoRa;
-lv_obj_t * ui_TitleLoRa;
-lv_obj_t * ui_ContainerSettings;
-lv_obj_t * ui_LabelInterval;
-lv_obj_t * ui_ContainerInterval;
-void ui_event_ButtonMinus(lv_event_t * e);
-lv_obj_t * ui_ButtonMinus;
-lv_obj_t * ui_ValueInterval;
-void ui_event_ButtonPlus(lv_event_t * e);
-lv_obj_t * ui_ButtonPlus;
-lv_obj_t * ui_LabelDevEUI;
-lv_obj_t * ui_ValueDevEUI;
-lv_obj_t * ui_LabelJoinEUI;
-lv_obj_t * ui_ValueJoinEUI;
-lv_obj_t * ui_LabelAppKey;
-lv_obj_t * ui_ValueAppKey;
-lv_obj_t * ui_ButtonJoin;
-lv_obj_t * ui____initial_actions0;
-const lv_img_dsc_t * ui_imgset_location[1] = {&ui_img_location2_png};
+lv_obj_t* ui_ScreenLoRa;
+lv_obj_t* ui_TitleLoRa;
+lv_obj_t* ui_ContainerSettings;
+lv_obj_t* ui_LabelInterval;
+lv_obj_t* ui_ContainerInterval;
+void ui_event_ButtonMinus(lv_event_t* e);
+lv_obj_t* ui_ButtonMinus;
+lv_obj_t* ui_ValueInterval;
+void ui_event_ButtonPlus(lv_event_t* e);
+lv_obj_t* ui_ButtonPlus;
+lv_obj_t* ui_LabelDevEUI;
+lv_obj_t* ui_ValueDevEUI;
+lv_obj_t* ui_LabelJoinEUI;
+lv_obj_t* ui_ValueJoinEUI;
+lv_obj_t* ui_LabelAppKey;
+lv_obj_t* ui_ValueAppKey;
+lv_obj_t* ui_ButtonJoin;
+lv_obj_t* ui____initial_actions0;
+const lv_img_dsc_t* ui_imgset_location[1] = {&ui_img_location2_png};
 
 ///////////////////// TEST LVGL SETTINGS ////////////////////
 #if LV_COLOR_DEPTH != 16
-    #error "LV_COLOR_DEPTH should be 16bit to match SquareLine Studio's settings"
+#error "LV_COLOR_DEPTH should be 16bit to match SquareLine Studio's settings"
 #endif
-#if LV_COLOR_16_SWAP !=0
-    #error "LV_COLOR_16_SWAP should be 0 to match SquareLine Studio's settings"
+#if LV_COLOR_16_SWAP != 0
+#error "LV_COLOR_16_SWAP should be 0 to match SquareLine Studio's settings"
 #endif
 
 ///////////////////// ANIMATIONS ////////////////////
 
 ///////////////////// FUNCTIONS ////////////////////
-void ui_event_ButtonMinus(lv_event_t * e)
-{
-    lv_event_code_t event_code = lv_event_get_code(e);
-    lv_obj_t * target = lv_event_get_target(e);
-    if(event_code == LV_EVENT_CLICKED) {
-        _ui_spinbox_step(ui_ValueInterval, -1);
-    }
+void ui_event_ButtonMinus(lv_event_t* e) {
+  lv_event_code_t event_code = lv_event_get_code(e);
+  if (event_code == LV_EVENT_CLICKED) {
+    _ui_spinbox_step(ui_ValueInterval, -1);
+  }
 }
-void ui_event_ButtonPlus(lv_event_t * e)
-{
-    lv_event_code_t event_code = lv_event_get_code(e);
-    lv_obj_t * target = lv_event_get_target(e);
-    if(event_code == LV_EVENT_CLICKED) {
-        _ui_spinbox_step(ui_ValueInterval, 1);
-    }
+void ui_event_ButtonPlus(lv_event_t* e) {
+  lv_event_code_t event_code = lv_event_get_code(e);
+  if (event_code == LV_EVENT_CLICKED) {
+    _ui_spinbox_step(ui_ValueInterval, 1);
+  }
 }
 
 ///////////////////// SCREENS ////////////////////
 
-void ui_init(void)
-{
-    LV_EVENT_GET_COMP_CHILD = lv_event_register_id();
+void ui_init(void) {
+  LV_EVENT_GET_COMP_CHILD = lv_event_register_id();
 
-    lv_disp_t * dispp = lv_disp_get_default();
-    lv_theme_t * theme = lv_theme_default_init(dispp, lv_palette_main(LV_PALETTE_BLUE), lv_palette_main(LV_PALETTE_RED),
-                                               true, LV_FONT_DEFAULT);
-    lv_disp_set_theme(dispp, theme);
-    ui_ScreenCamera_screen_init();
-    ui_ScreenSensors_screen_init();
-    ui_ScreenLoRa_screen_init();
-    ui____initial_actions0 = lv_obj_create(NULL);
-    lv_disp_load_scr(ui_ScreenCamera);
+  lv_disp_t* dispp = lv_disp_get_default();
+  lv_theme_t* theme = lv_theme_default_init(
+      dispp, lv_palette_main(LV_PALETTE_BLUE), lv_palette_main(LV_PALETTE_RED),
+      true, LV_FONT_DEFAULT);
+  lv_disp_set_theme(dispp, theme);
+  ui_ScreenCamera_screen_init();
+  ui_ScreenSensors_screen_init();
+  ui_ScreenLoRa_screen_init();
+  ui____initial_actions0 = lv_obj_create(NULL);
+  lv_disp_load_scr(ui_ScreenCamera);
 }

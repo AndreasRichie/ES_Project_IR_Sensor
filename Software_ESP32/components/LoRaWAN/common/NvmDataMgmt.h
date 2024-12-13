@@ -37,6 +37,9 @@
 #ifndef __NVMDATAMGMT_H__
 #define __NVMDATAMGMT_H__
 
+#include <stdbool.h>
+#include <stdint.h>
+
 #ifdef __cplusplus
 extern "C" {
 #endif
@@ -44,31 +47,31 @@ extern "C" {
 /*!
  * \brief NVM Management event.
  *
- * \param [IN] notifyFlags Bitmap which contains the information about modules that
- *                         changed.
+ * \param [IN] notifyFlags Bitmap which contains the information about modules
+ * that changed.
  */
-void NvmDataMgmtEvent( uint16_t notifyFlags );
+void NvmDataMgmtEvent(uint16_t notifyFlags);
 
 /*!
  * \brief Function which stores the MAC data into NVM, if required.
  *
  * \retval Number of bytes which were stored.
  */
-uint16_t NvmDataMgmtStore( void );
+uint16_t NvmDataMgmtStore(void);
 
 /*!
  * \brief Function which restores the MAC data from NVM, if required.
  *
  * \retval Number of bytes which were restored.
  */
-uint16_t NvmDataMgmtRestore(void );
+uint16_t NvmDataMgmtRestore(void);
 
 /*!
  * \brief Resets the NVM data.
  *
  * \retval Returns true, if successful.
  */
-bool NvmDataMgmtFactoryReset( void );
+bool NvmDataMgmtFactoryReset(void);
 
 int nvm_init(void);
 
@@ -78,4 +81,4 @@ int nvm_init(void);
 }
 #endif
 
-#endif // __NVMDATAMGMT_H__
+#endif  // __NVMDATAMGMT_H__

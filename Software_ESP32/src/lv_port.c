@@ -144,8 +144,7 @@ static void button_read(lv_indev_drv_t *indev_drv, lv_indev_data_t *data) {
  */
 static IRAM_ATTR void touchpad_read(lv_indev_drv_t *indev_drv,
                                     lv_indev_data_t *data) {
-  uint8_t tp_num = 0;
-  static uint16_t x = 0, y = 0, btn_val = 0;
+  static uint16_t x = 0, y = 0;
   /* Read touch point(s) via touch IC */
   indev_data_t indev_data;
   if (ESP_OK != indev_get_major_value(&indev_data)) {
@@ -315,7 +314,6 @@ static void lv_port_direct_mode_copy(void) {
   uint8_t *buf1 = disp_refr->driver->draw_buf->buf1;
   uint8_t *buf2 = disp_refr->driver->draw_buf->buf2;
   int h_res = disp_refr->driver->hor_res;
-  int v_res = disp_refr->driver->ver_res;
 
   uint8_t *fb_from = buf_act;
   uint8_t *fb_to = (fb_from == buf1) ? buf2 : buf1;
