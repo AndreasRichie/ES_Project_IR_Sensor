@@ -3,11 +3,15 @@ SET(SOURCES components/ui_comp_buttonminus.c
     screens/ui_ScreenCamera.c
     screens/ui_ScreenSensors.c
     screens/ui_ScreenLoRa.c
+    screens/ui_ScreenTime.c
+    screens/ui_ScreenPopUp.c
     ui.c
     components/ui_comp_hook.c
     ui_helpers.c
     ui_events.c
-    images/ui_img_location2_png.c
-    fonts/ui_font_Font1.c)
+    images/ui_img_antenna_png.c
+    images/ui_img_calibration_green_png.c
+    images/ui_img_calibration_red_png.c
+    images/ui_img_clock_png.c)
 
 add_library(ui ${SOURCES})

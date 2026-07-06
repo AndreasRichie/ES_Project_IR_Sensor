@@ -86,6 +86,11 @@ extern lv_obj_t * ui_Pixel62;
 extern lv_obj_t * ui_Pixel63;
 extern lv_obj_t * ui_Pixel64;
 extern lv_obj_t * ui_TitleCamera;
+extern lv_obj_t * ui_ButtonOk;
+extern lv_obj_t * ui_LabelOk;
+extern lv_obj_t * ui_ButtonAll;
+extern lv_obj_t * ui_LabelAll;
+extern lv_obj_t * ui_Image6;
 // SCREEN: ui_ScreenSensors
 void ui_ScreenSensors_screen_init(void);
 extern lv_obj_t * ui_ScreenSensors;
@@ -93,16 +98,20 @@ extern lv_obj_t * ui_TitleSensorValues;
 extern lv_obj_t * ui_SensorValueLabels;
 extern lv_obj_t * ui_SurfaceTempText;
 extern lv_obj_t * ui_SurfaceTempDisplay;
-extern lv_obj_t * ui_Value;
-extern lv_obj_t * ui_Unit;
+extern lv_obj_t * ui_ValueST;
+extern lv_obj_t * ui_UnitST;
 extern lv_obj_t * ui_AirTempText;
 extern lv_obj_t * ui_AirTempDisplay;
-extern lv_obj_t * ui_Value1;
-extern lv_obj_t * ui_Unit1;
+extern lv_obj_t * ui_ValueAT;
+extern lv_obj_t * ui_UnitAT;
 extern lv_obj_t * ui_AirHumText;
 extern lv_obj_t * ui_AirHumDisplay;
-extern lv_obj_t * ui_Value2;
-extern lv_obj_t * ui_Unit2;
+extern lv_obj_t * ui_ValueAH;
+extern lv_obj_t * ui_UnitAH;
+extern lv_obj_t * ui_MRTText;
+extern lv_obj_t * ui_MRTDisplay;
+extern lv_obj_t * ui_ValueMRT;
+extern lv_obj_t * ui_UnitMRT;
 // SCREEN: ui_ScreenLoRa
 void ui_ScreenLoRa_screen_init(void);
 extern lv_obj_t * ui_ScreenLoRa;
@@ -112,9 +121,11 @@ extern lv_obj_t * ui_LabelInterval;
 extern lv_obj_t * ui_ContainerInterval;
 void ui_event_ButtonMinus(lv_event_t * e);
 extern lv_obj_t * ui_ButtonMinus;
+extern lv_obj_t * ui_LabelMinus;
 extern lv_obj_t * ui_ValueInterval;
 void ui_event_ButtonPlus(lv_event_t * e);
 extern lv_obj_t * ui_ButtonPlus;
+extern lv_obj_t * ui_LabelPlus;
 extern lv_obj_t * ui_LabelDevEUI;
 extern lv_obj_t * ui_ValueDevEUI;
 extern lv_obj_t * ui_LabelJoinEUI;
@@ -122,14 +133,48 @@ extern lv_obj_t * ui_ValueJoinEUI;
 extern lv_obj_t * ui_LabelAppKey;
 extern lv_obj_t * ui_ValueAppKey;
 extern lv_obj_t * ui_ButtonJoin;
+extern lv_obj_t * ui_LabelJoin;
+// SCREEN: ui_ScreenTime
+void ui_ScreenTime_screen_init(void);
+extern lv_obj_t * ui_ScreenTime;
+extern lv_obj_t * ui_Date;
+extern lv_obj_t * ui_TitleTime;
+extern lv_obj_t * ui_ButtonSave;
+extern lv_obj_t * ui_SaveLabel;
+extern lv_obj_t * ui_Time;
+extern lv_obj_t * ui_Hours;
+void ui_event_HoursSlider(lv_event_t * e);
+extern lv_obj_t * ui_HoursSlider;
+extern lv_obj_t * ui_HoursText;
+extern lv_obj_t * ui_Minutes;
+void ui_event_MinutesSlider(lv_event_t * e);
+extern lv_obj_t * ui_MinutesSlider;
+extern lv_obj_t * ui_MinutesText;
+extern lv_obj_t * ui_Colon;
+// SCREEN: ui_ScreenPopUp
+void ui_ScreenPopUp_screen_init(void);
+extern lv_obj_t * ui_ScreenPopUp;
+extern lv_obj_t * ui_PanelPopUp;
+extern lv_obj_t * ui_LabelCalibration;
+extern lv_obj_t * ui_CalibOption;
+extern lv_obj_t * ui_ValueCalib;
+extern lv_obj_t * ui_ValueNumpad;
+extern lv_obj_t * ui_ButtonCancel;
+extern lv_obj_t * ui_LabelCancel;
+extern lv_obj_t * ui_ButtonConfirm;
+extern lv_obj_t * ui_LabelConfirm;
+extern lv_obj_t * ui_LabelSource;
+extern lv_obj_t * ui_LabelInfo;
 extern lv_obj_t * ui____initial_actions0;
 
 
-LV_IMG_DECLARE(ui_img_location2_png);    // assets/location2.png
+LV_IMG_DECLARE(ui_img_antenna_png);    // assets/antenna.png
+LV_IMG_DECLARE(ui_img_calibration_green_png);    // assets/calibration_green.png
+LV_IMG_DECLARE(ui_img_calibration_red_png);    // assets/calibration_red.png
+LV_IMG_DECLARE(ui_img_clock_png);    // assets/clock.png
 
 
 
-LV_FONT_DECLARE(ui_font_Font1);
 
 
 

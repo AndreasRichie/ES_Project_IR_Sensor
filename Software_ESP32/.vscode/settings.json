@@ -16,5 +16,6 @@
         "optional": "cpp",
         "semphr.h": "c",
         "cmath": "cpp"
-    }
+    },
+    "idf.currentSetup": "D:\\Espressif\\frameworks\\esp-idf-v5.4.0\\v5.4\\esp-idf"
 }

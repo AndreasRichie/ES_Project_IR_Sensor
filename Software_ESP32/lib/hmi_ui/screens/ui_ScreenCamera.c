@@ -606,4 +606,46 @@ void ui_ScreenCamera_screen_init(void)
     lv_label_set_text(ui_TitleCamera, "Heat Image of IR Camera ");
     lv_obj_set_style_text_font(ui_TitleCamera, &lv_font_montserrat_28, LV_PART_MAIN | LV_STATE_DEFAULT);
 
+    ui_ButtonOk = lv_btn_create(ui_ScreenCamera);
+    lv_obj_set_width(ui_ButtonOk, 50);
+    lv_obj_set_height(ui_ButtonOk, 40);
+    lv_obj_set_x(ui_ButtonOk, -10);
+    lv_obj_set_y(ui_ButtonOk, 10);
+    lv_obj_set_align(ui_ButtonOk, LV_ALIGN_TOP_RIGHT);
+    lv_obj_add_flag(ui_ButtonOk, LV_OBJ_FLAG_HIDDEN | LV_OBJ_FLAG_SCROLL_ON_FOCUS);     /// Flags
+    lv_obj_clear_flag(ui_ButtonOk, LV_OBJ_FLAG_SCROLLABLE);      /// Flags
+    lv_obj_set_style_bg_color(ui_ButtonOk, lv_color_hex(0x0D9900), LV_PART_MAIN | LV_STATE_DEFAULT);
+    lv_obj_set_style_bg_opa(ui_ButtonOk, 255, LV_PART_MAIN | LV_STATE_DEFAULT);
+
+    ui_LabelOk = lv_label_create(ui_ButtonOk);
+    lv_obj_set_width(ui_LabelOk, LV_SIZE_CONTENT);   /// 1
+    lv_obj_set_height(ui_LabelOk, LV_SIZE_CONTENT);    /// 1
+    lv_obj_set_align(ui_LabelOk, LV_ALIGN_CENTER);
+    lv_label_set_text(ui_LabelOk, "OK");
+    lv_obj_set_style_text_font(ui_LabelOk, &lv_font_montserrat_20, LV_PART_MAIN | LV_STATE_DEFAULT);
+
+    ui_ButtonAll = lv_btn_create(ui_ScreenCamera);
+    lv_obj_set_width(ui_ButtonAll, 50);
+    lv_obj_set_height(ui_ButtonAll, 40);
+    lv_obj_set_x(ui_ButtonAll, 10);
+    lv_obj_set_y(ui_ButtonAll, 10);
+    lv_obj_add_flag(ui_ButtonAll, LV_OBJ_FLAG_HIDDEN | LV_OBJ_FLAG_SCROLL_ON_FOCUS);     /// Flags
+    lv_obj_clear_flag(ui_ButtonAll, LV_OBJ_FLAG_SCROLLABLE);      /// Flags
+    lv_obj_set_style_bg_color(ui_ButtonAll, lv_color_hex(0x605E5E), LV_PART_MAIN | LV_STATE_DEFAULT);
+    lv_obj_set_style_bg_opa(ui_ButtonAll, 255, LV_PART_MAIN | LV_STATE_DEFAULT);
+
+    ui_LabelAll = lv_label_create(ui_ButtonAll);
+    lv_obj_set_width(ui_LabelAll, LV_SIZE_CONTENT);   /// 1
+    lv_obj_set_height(ui_LabelAll, LV_SIZE_CONTENT);    /// 1
+    lv_obj_set_align(ui_LabelAll, LV_ALIGN_CENTER);
+    lv_label_set_text(ui_LabelAll, "All");
+    lv_obj_set_style_text_font(ui_LabelAll, &lv_font_montserrat_20, LV_PART_MAIN | LV_STATE_DEFAULT);
+
+    ui_Image6 = lv_img_create(ui_ScreenCamera);
+    lv_obj_set_width(ui_Image6, LV_SIZE_CONTENT);   /// 1
+    lv_obj_set_height(ui_Image6, LV_SIZE_CONTENT);    /// 1
+    lv_obj_set_align(ui_Image6, LV_ALIGN_CENTER);
+    lv_obj_add_flag(ui_Image6, LV_OBJ_FLAG_ADV_HITTEST);     /// Flags
+    lv_obj_clear_flag(ui_Image6, LV_OBJ_FLAG_SCROLLABLE);      /// Flags
+
 }

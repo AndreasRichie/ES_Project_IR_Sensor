@@ -1,0 +1,15 @@
+# vs code files
+*.code-workspace
+.vscode
+
+# python enviroment
+.venv/
+es_project/
+__pycache__/
+
+# tuning folders
+tb_logs/
+DNN_Tuner_Results*/
+
+# models
+Saved_Models/

@@ -1,3 +1,10 @@
+# vs code files
+*.code-workspace
+.vscode
+
+# python enviroment
+venv/
+
 # Prerequisites
 *.d
 
